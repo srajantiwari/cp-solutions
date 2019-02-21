@@ -53,22 +53,29 @@ int main()
     ll lo=1,hi=INF;
     while(lo<hi)
     {
-        ll mid=lo+(hi-lo)/2; // suppose the "mid" is minimum number of moves you need --- answer to the question
+        ll mid=lo+(hi-lo)/2;             // suppose the "mid" is minimum number of moves you need --- answer to the question
+        
         ll tim=mid/((long double)n);
-        ll rem=mid%n;
-        ll winr=r[n]*tim+r[rem]; //right moves you could have done remaining at stay at your initial position
-        ll winu=u[n]*tim+u[rem]; //up moves you could have done remaining at stay at your position
-        ll rmov=dr-sr; // right moves you need to do if there was no wind
-        ll umov=du-su; // up moves you need to do if there was no wind
-        ll nrmov=rmov-winr; // number of right moves you actually need when the wind is moving as per the given string
-        ll numov=umov-winu; // number of up moves you actually need when the wind is moving as per the given string
+        ll rem=mid % n;
+        
+        ll winr=r[n]*tim+r[rem];        // right moves you could have done remaining at stay at your initial position
+        ll winu=u[n]*tim+u[rem];        // up moves you could have done remaining at stay at your position
+        
+        ll rmov=dr-sr;                  // right moves you need to do if there was no wind
+        ll umov=du-su;                  // up moves you need to do if there was no wind
+        
+        ll nrmov=rmov-winr;             // number of right moves you actually need when the wind is moving as per the given string
+        ll numov=umov-winu;             // number of up moves you actually need when the wind is moving as per the given string
+        
         if((abs(nrmov)+abs(numov))>mid) 
-            lo=mid+1; // unable to reach destination in moves = mid
+            lo=mid+1;                   // unable to reach destination in moves = mid
+        
         else
-            hi=mid; // if we can reach the destination in moves = mid, maybe we can also reach destination in (lo+mid)/2
+            hi=mid;                     // if we can reach the destination in moves = mid, maybe we can also reach destination in (lo+mid)/2
+        
     }
     if(lo!=INF)
-        cout<<lo<<endl; // answer
+        cout<<lo<<endl;                // answer
     else
-        cout<<-1<<endl; // you need more than INF moves, you gotta be kidding me !!! (You can't reach your destination)
+        cout<<-1<<endl;                // you need more than INF moves, you gotta be kidding me !!! (You can't reach your destination)
 }
