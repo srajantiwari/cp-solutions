@@ -29,6 +29,9 @@ int main()
     cin>>cost[i];
 
     ll dp[n+1][4];mem(dp,0);
+    // dp[i][j] : minimum ambiguity until ith element such the prefix ubtil j of string "hard"
+    // dp[i][2] : minimum ambiguity in the given string until the ith index when only "ha" is taken into consideration
+    
     for(int i = 1; i <= n; i++){
         for(int j = 0; j < 4; j++){
             dp[i][j] = dp[i-1][j];
