@@ -1,0 +1,102 @@
+#include <bits/stdc++.h>
+ 
+using namespace std;
+typedef long long ll;
+#define mem(dp,a)           memset(dp,a,sizeof dp)
+#define rep(i,a,b)          for(int i=a;i<b;i++)
+#define repb(i,a,b)         for(ll i=a;i>=b;i--)
+#define f(n)                for (ll i=0;i<n;i++)
+#define pb(x)               push_back(x)
+#define mp(x,y)             make_pair(x,y)
+#define tr(c,it)            for(((c).begin())it=(c).begin();it!=(c).end();it++)
+#define sz(c)               (c).size()
+#define all(c)              (c).begin(),(c).end()
+#define sl(a)               scanf("%lld",&a);
+#define TH                  1000
+#define F                   first
+#define S                   second
+ll MOD=pow(10,9)+7;
+ll INF=1e18+10;
+ 
+const int N=50010;
+ 
+int a[N];
+ 
+struct // structure of our segment tree
+{
+    int maxsum=0; // stores the maximum sum possible
+    int pre=0;    // stores the maximum prefix sum possible
+    int suf=0;    // stores the maximum suffix sum possible
+    int sum=0;    // stores the sum of the segment 
+}typedef node;
+
+node segt[4*N]; // our segment tree
+ 
+void build(int v,int l,int r)
+{
+    if(l==r)
+    {
+        segt[v].sum=segt[v].pre=segt[v].suf=segt[v].maxsum=a[l];
+    }
+    else
+    {
+        int mid=(l+r)/2;
+        build(2*v,l,mid);
+        build(2*v+1,mid+1,r);
+        segt[v].sum=segt[2*v].sum+segt[2*v+1].sum;
+        segt[v].pre=max(segt[2*v].pre,segt[2*v].sum+segt[2*v+1].pre);
+        segt[v].suf=max(segt[2*v+1].suf,segt[2*v+1].sum+segt[2*v].suf);
+        segt[v].maxsum=max(segt[2*v].maxsum,max(segt[2*v+1].maxsum,segt[2*v].suf+segt[2*v+1].pre));
+    }
+}
+ 
+node query(int v,int l,int r,int i,int j) // returns node with maximum sum in the given segment
+{
+    node nod; // the node we will return in case of partial or no overlap
+    
+    if(i>r || j<l)
+    {
+        nod.sum=nod.pre=nod.suf=nod.maxsum=-15700;
+        return nod;
+    }
+    
+    if(l<=i && j<=r)
+        return segt[v];
+          
+    else
+    {
+        int mid=(i+j)/2;
+        node p1=query(2*v,l,r,i,mid);       // query for left child
+        node p2=query(2*v+1,l,r,mid+1,j);   // query for right child
+        
+        nod.sum=p1.sum+p2.sum;                                        // merging the results of left and right child in nod
+        nod.pre=max(p1.pre,p1.sum+p2.pre);
+        nod.suf=max(p2.suf,p2.sum+p1.suf);
+        nod.maxsum=max(p1.maxsum,max(p2.maxsum,p1.suf+p2.pre));
+        
+        return nod; // returning nod which is answer to the query asked after each recursion....
+    }
+}
+ 
+int main()
+{
+    //using FAST IO because normal cin/cout gave TLE
+	  ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n;cin>>n;
+    rep(i,0,n)
+    cin>>a[i];
+ 
+    build(1,0,n-1); // build segment tree
+ 
+    int q;cin>>q;
+    while(q--)
+    {
+        int l,r;cin>>l>>r;
+        l-=1,r-=1;
+        node ans=query(1,l,r,0,n-1);
+        cout<<ans.maxsum<<"\n";
+    }
+    
+}
